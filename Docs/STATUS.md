@@ -1,6 +1,6 @@
 # 项目状态快照
 
-> 生成时间:2026-09-22 21:23:19
+> 生成时间:2026-09-23 08:29:43
 > **本文件由 `Tools/ProjectStatus.ps1` 自动生成,不要手改。**
 > 人的判断与计划写在 `Docs/PROGRESS.md`。
 
@@ -11,12 +11,13 @@
 | 项 | 值 |
 |---|---|
 | 分支 | main |
-| HEAD | 5aa1593 |
-| 未提交改动 | 16 项 |
+| HEAD | 2666c7c |
+| 未提交改动 | 1 项 |
 
 ### 最近提交
 
 ```
+2666c7c wip:实现L0时间系统
 5aa1593 更新gitignore
 844feda init: UE5 project skeleton (Config/Source/uproject)
 f6299df Initial commit
@@ -25,22 +26,7 @@ f6299df Initial commit
 ### 工作区改动
 
 ```
-A  .idea/.idea.TheDemiugeUE5.dir/.idea/.gitignore
-A  .idea/.idea.TheDemiugeUE5.dir/.idea/indexLayout.xml
-A  .idea/.idea.TheDemiugeUE5.dir/.idea/vcs.xml
- M Config/DefaultEngine.ini
- M Config/DefaultGame.ini
- M TheDemiugeUE5.code-workspace
- M TheDemiugeUE5.slnx
- M TheDemiugeUE5.uproject
-?? .clangd
-?? AGENTS.md
-?? Content/
-?? Docs/
-?? Source/TheDemiugeUE5/Private/
-?? Source/TheDemiugeUE5/Public/
-?? TheDemiugeUE5.uproject.DotSettings.user
-?? Tools/
+ M Source/TheDemiugeUE5/Public/Subsystem/clock/GameClockSubsystem.h
 ```
 
 ## 二、自上次跟进以来的变化
@@ -48,20 +34,19 @@ A  .idea/.idea.TheDemiugeUE5.dir/.idea/vcs.xml
 | 类型 | 数量 |
 |---|---|
 | 新增 | 0 |
-| 修改 | 7 |
+| 修改 | 6 |
 | 删除 | 0 |
 
-_baseline 时间:2026-09-22 19:22:41_
+_baseline 时间:2026-09-22 21:23:19_
 
 ### 修改文件
 
-- `Automation_TheDemiugeUE5.sln`
+- `AGENTS.md`
 - `Docs\.status-baseline.json`
+- `Docs\PROGRESS.md`
 - `Docs\STATUS.md`
 - `Source\TheDemiugeUE5\Private\Subsystem\clock\GameClockSubsystem.cpp`
 - `Source\TheDemiugeUE5\Public\Subsystem\clock\GameClockSubsystem.h`
-- `TheDemiugeUE5.sln`
-- `TheDemiugeUE5.slnx`
 
 ## 三、架构清单进度
 
@@ -102,14 +87,14 @@ _baseline 时间:2026-09-22 19:22:41_
 | 文件 | 行数 | 最后修改 |
 |---|---|---|
 | `Source\TheDemiugeUE5.Target.cs` | 15 | 08-05 20:19 |
-| `Source\TheDemiugeUE5\Private\Subsystem\clock\GameClockSubsystem.cpp` | 67 | 09-22 20:52 |
-| `Source\TheDemiugeUE5\Public\Subsystem\clock\GameClockSubsystem.h` | 129 | 09-22 21:12 |
+| `Source\TheDemiugeUE5\Private\Subsystem\clock\GameClockSubsystem.cpp` | 67 | 09-22 22:07 |
+| `Source\TheDemiugeUE5\Public\Subsystem\clock\GameClockSubsystem.h` | 131 | 09-23 08:29 |
 | `Source\TheDemiugeUE5\TheDemiugeUE5.Build.cs` | 23 | 08-05 20:19 |
 | `Source\TheDemiugeUE5\TheDemiugeUE5.cpp` | 6 | 08-05 20:19 |
 | `Source\TheDemiugeUE5\TheDemiugeUE5.h` | 6 | 08-05 20:19 |
 | `Source\TheDemiugeUE5Editor.Target.cs` | 15 | 08-05 20:19 |
 
-合计 **7** 个源文件,**261** 行。
+合计 **7** 个源文件,**263** 行。
 
 ---
 

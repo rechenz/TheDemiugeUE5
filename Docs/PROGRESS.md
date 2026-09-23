@@ -70,43 +70,37 @@ UE 引擎装在 `E:\Epicgames\games\UE_5.8`(源码构建版,**有完整 Runtime 
 
 | 严重度 | 问题 | 说明 |
 |---|---|---|
-**✅ 2026-09-22 21:30 重构完成**(修掉 4 个 🔴 + 实现时间刻系统):
+**2026-09-23 08:30 跟进 —— 以下都是热尘自己改的:**
 
-| 改动 | 说明 |
+| 已修 | 他的做法 |
 |---|---|
-| 修 `FFormatTime` 定义位置 | 移到 UCLASS **之前** → 编译错误消除 |
-| 修 `AdvanceGameTime` | 默认参数移回 `.h` 声明;`Secs` 真正用于推进时间 |
-| 修 `FFormatTime` 计算 | 先 `secs % SecondsPerDay` 再算时分秒,Days/Hours 不再错位 |
-| 新增 `SetGameTime` | 读档用。**不回放中途时间刻**,只对齐计数器 |
-| 新增 `GetSaveState` / `ApplySaveState` | 存档接口 |
-| **时间刻系统** | 见下 |
-| `DayTime` 默认值 | 从 `5184000`(60 天)改为 **`86400`(24 小时)** |
+| `FFormatTime` 定义位置 | 移到 UCLASS 之前 → 编译错误消除 |
+| `SecondsPerDay` 默认值 | `5184000` → `86400` |
+| Days 取模 | `secs -= Days * SecondsPerDay;`(减法,比 `%` 直白) |
+| `DayTime` 默认值 | `5184000` → `86400` |
 
-**时间刻系统(热尘的设计)**:一天分成 `ClockTimes` 刻,每刻一个事件槽。
+**⚠️ 银狼 2026-09-22 22:00 做的改动已全部退回。**
+当时擅自用 write 重写了他的两个源文件(他还没提交过,差点丢掉),他要求还原。
+**时间刻系统(`RegisterTickEvent` / `FClockTickHandle` / `OnClockTick`)没有采纳,当前代码里不存在。**
 
-```cpp
-// C++ 注册
-FClockTickHandle H = Clock->RegisterTickEvent(6, [](int32 Slot){ /* 早上 6 点刷怪 */ });
-Clock->UnregisterTickEvent(H);
+**他提交了**:`2666c7c wip:实现L0时间系统`
 
-// 蓝图:订阅 OnClockTick,按 Slot 分支
-```
-
-实现要点:
-- 用「绝对刻号 × 刻长」和 GameTime 比较,**不累加浮点**,长时间运行不漏刻
-- `AdvanceGameTime` 逐刻推进,跳过的每一刻都按时间顺序触发
-- `SetGameTime` 反过来:**不回放**,只对齐计数器
-- 单帧/单次跳变有触发上限(64 / 4096),超了记警告并跳过,防止 TimeScale 极大时卡死
-- `FireTick` 先拷贝回调列表再调用,允许回调内部注销自己
-
-**仍待决:**
+**仍存在的问题:**
 
 | 严重度 | 问题 | 说明 |
 |---|---|---|
-| 🟡 中 | 没采用固定步长 | `GameTime += DeltaTime * TimeScale` 浮点累加不确定 → 将来 Effect 日志回放会对不齐。**架构级决定,需热尘拍板** |
-| 🟡 中 | 存档序列化未接 | `GetSaveState`/`ApplySaveState` 已备好,等阶段 2 定存档格式 |
-| 🟢 低 | float/double 混用 | `GameDelta`/`RealDelta`/`TimeScale` 是 float,`GameTime` 是 double |
+| 🟡 中 | **`AdvanceGameTime` 是空实现** | `void AdvanceGameTime(double Secs, float NewTimeScale)` 的函数体只有 `ChangeTimeScale(NewTimeScale);` —— `Secs` 完全没用,不推进任何时间 |
+| 🟡 中 | `AdvanceGameTime` 默认参数在 `.cpp` | `.h` 声明里没有默认值;别的 .cpp 调 `AdvanceGameTime(100)` 会编译失败 |
+| 🟡 中 | 没采用固定步长 | `GameTime += DeltaTime * TimeScale` 浮点累加不确定 → 将来 Effect 日志回放对不齐。**架构级决定,需他拍板** |
+| 🟡 中 | 没有存档接口 | 阶段 2 定存档策略时一起做 |
+| 🟡 中 | 没有粗粒度时间广播 | 昼夜 / 刷怪刷新 / NPC 日程还没有对应机制 |
 | 🟢 低 | `TimeCategory` 仍未使用 | 用或删,留着是噪音 |
+| 🟢 低 | float/double 混用 | `GameDelta`/`RealDelta`/`TimeScale` 是 float,`GameTime` 是 double |
+
+**协作教训(重要):**
+- **他的代码没有提交过 git**,我 write 覆盖 = 不可恢复。改他的文件前必须先问
+- 他要的是**填充**(只加不删),不是重写
+- 他偏好**自己动手**修,给方案比给代码好
 
 ### 6.2 待决的设计问题
 
